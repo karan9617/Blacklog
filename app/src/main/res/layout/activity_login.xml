@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity"
+    android:background="#000"
+    >
+
+    <ImageView
+        android:layout_width="260dp"
+        android:layout_height="150dp"
+
+        android:id="@+id/image"
+        android:src="@drawable/logoblacklog"
+        android:layout_centerHorizontal="true"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:id="@+id/linearfordots"
+        android:orientation="vertical"
+        android:layout_alignTop="@+id/image"
+        >
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:id="@+id/highway"
+            android:src="@drawable/highway"
+            android:layout_centerHorizontal="true"
+            />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="300dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="30dp"
+        android:orientation="vertical"
+        >
+
+        <EditText
+            android:id="@+id/username"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/edittext"
+            android:drawableLeft="@drawable/ic_user_icon"
+            android:fontFamily="@font/allerta"
+            android:hint="Username"
+            android:inputType="textEmailAddress"
+            android:padding="4dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#E3D9D9" />
+
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="49dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/edittext"
+            android:drawableLeft="@drawable/ic_baseline_lock_open_24"
+            android:fontFamily="@font/allerta"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:padding="4dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#E3D9D9" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Forgot Password"
+            android:textSize="16sp"
+
+            android:textStyle="bold"
+            android:layout_gravity="right"
+            android:id="@+id/desc"
+            android:layout_marginRight="22dp"
+            android:textColor="#D4AF37"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="No account yet Please Sign In"
+            android:textSize="16sp"
+            android:layout_marginBottom="-10dp"
+
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/signintext"
+            android:textColor="#D4AF37"
+            />
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="59dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+
+            android:id="@+id/loginButton"
+            android:text="LOGIN"
+            android:textStyle="bold"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="40dp"
+            android:textSize="22sp"
+            android:background="@drawable/mybutton"
+            />
+    </LinearLayout>
+</RelativeLayout>

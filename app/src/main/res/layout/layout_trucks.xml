@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_margin="3dp"
+    android:background="#00000000"
+    android:layout_marginBottom="10dp"
+    >
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#00000000"
+        >
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="190dp"
+            android:layout_height="180dp"
+
+            android:src="@drawable/trackimage"
+            android:padding="0dp"
+            android:elevation="15dp"
+            />
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        app:cardBackgroundColor="#00000000"
+        android:background="#00000000"
+      >
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/layout_bg"
+
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginLeft="130dp"
+                >
+                <TextView
+                    android:id="@+id/textViewTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:background="#B3030303"
+                    android:gravity="center_horizontal"
+                    android:paddingRight="33dp"
+                    android:text="NL 01 AA 1558"
+                    android:textStyle="bold"
+
+                    android:paddingTop="7dp"
+                    android:paddingBottom="7dp"
+                    android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+                    android:textColor="#D4AF37"
+                    android:textSize="20sp"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/signalHead"
+                    android:textSize="17sp"
+                    android:layout_marginTop="9dp"
+                    android:textColor="#000"
+                    android:fontFamily="@font/allerreg"
+                    android:layout_marginLeft="30dp"
+                    android:text="Signal"
+                    android:textStyle="bold"
+
+                    />
+
+                <TextView
+                    android:id="@+id/signal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="5dp"
+                    android:text="Signal"
+                    android:fontFamily="@font/allerreg"
+
+                    android:textColor="#39030202"
+                    android:textSize="15sp"
+
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/blacklogBasicHead"
+                    android:fontFamily="@font/allerreg"
+
+                    android:textSize="17sp"
+                    android:layout_marginTop="5dp"
+                    android:textColor="#000"
+                    android:layout_marginLeft="30dp"
+                    android:text="Blacklog Basic"
+                    android:textStyle="bold"
+
+                    />
+
+                <TextView
+                    android:id="@+id/blacklogBasic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="5dp"
+                    android:text="BL0002345"
+                    android:textColor="#39030202"
+                    android:textSize="15sp"
+
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/lastUpdateHead"
+                    android:textSize="17sp"
+                    android:fontFamily="@font/allerreg"
+
+                    android:layout_marginTop="5dp"
+                    android:textColor="#000"
+                    android:layout_marginLeft="30dp"
+                    android:text="Last Updated"
+                    android:textStyle="bold"
+
+                    />
+
+                <TextView
+                    android:id="@+id/lastUpdate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="5dp"
+                    android:text="NA"
+                    android:fontFamily="@font/allerreg"
+
+                    android:textColor="#39030202"
+                    android:textSize="15sp"
+
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/fuelId"
+                    android:textSize="17sp"
+                    android:layout_marginTop="5dp"
+                    android:textColor="#000"
+                    android:layout_marginLeft="30dp"
+                    android:text="Fuel Lid"
+                    android:textStyle="bold"
+
+                    />
+
+                <TextView
+                    android:id="@+id/fuel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/allerreg"
+
+                    android:text="NA"
+                    android:textColor="#39030202"
+                    android:textSize="15sp"
+
+                    />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/speedHead"
+                    android:textSize="17sp"
+                    android:layout_marginTop="5dp"
+                    android:textColor="#000"
+                    android:layout_marginLeft="30dp"
+                    android:text="Speed"
+                    android:textStyle="bold"
+
+                    />
+
+                <TextView
+                    android:id="@+id/speed"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/allerreg"
+
+                    android:text="12kmph"
+                    android:textColor="#39030202"
+                    android:textSize="15sp"
+
+                    />
+            </LinearLayout>
+
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="59dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+
+                android:id="@+id/signUpButton"
+                android:text="VIEW LOCATION"
+
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="40dp"
+                android:textSize="22sp"
+                android:layout_marginBottom="17dp"
+                android:background="@drawable/mybutton"
+                />
+            </LinearLayout>
+            <TextView
+                android:id="@+id/addressHead"
+                android:layout_width="106dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:fontFamily="@font/allerreg"
+                android:textStyle="bold"
+                android:layout_marginTop="165dp"
+                android:text="Address"
+                android:textColor="#000"
+                android:textSize="12sp"
+
+                />
+            <TextView
+                android:id="@+id/address"
+                android:layout_width="119dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:fontFamily="@font/allerreg"
+
+                android:layout_marginTop="185dp"
+                android:text="Upasini stone crusher, near MANGALI, Manegaon, Madhya Pradesh 482051, India 23.07946, 79.91734"
+                android:textColor="#39030202"
+                android:textSize="12sp"
+
+                />
+
+
+        </RelativeLayout>
+
+    </androidx.cardview.widget.CardView>
+    </FrameLayout>
+</LinearLayout>
