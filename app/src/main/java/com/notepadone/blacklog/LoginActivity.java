@@ -1,6 +1,7 @@
 package com.notepadone.blacklog;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -37,7 +38,7 @@ import java.util.Map;
 public class LoginActivity extends AppCompatActivity {
 
     TextView signintext;
-    Button loginButton;
+    Button loginButton,infobutton;
     EditText username, password;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +71,7 @@ public class LoginActivity extends AppCompatActivity {
         String sourceString = id + "<b>" + name + "</b> ";
 
         signintext.setText(Html.fromHtml(sourceString));
-
+        infobutton = findViewById(R.id.infobutton);
 
         loginButton = findViewById(R.id.loginButton);
 
@@ -83,17 +84,30 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                register();
+
                 /*Intent intent = new Intent(LoginActivity.this, TrucksInfo.class);
                 startActivity(intent);
 
                  */
+
             }
         });
         signintext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
+
+            }
+        });
+        infobutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent serviceIntent = new Intent(LoginActivity.this, ServiceForUpdate.class);
+                serviceIntent.putExtra("inputExtra", "input");
+                ContextCompat.startForegroundService(LoginActivity.this, serviceIntent);
+
+                Intent intent = new Intent(LoginActivity.this, TrucksInfo.class);
                 startActivity(intent);
             }
         });

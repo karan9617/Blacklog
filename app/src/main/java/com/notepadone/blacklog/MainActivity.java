@@ -1,6 +1,7 @@
 package com.notepadone.blacklog;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
@@ -22,10 +23,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         try
         {
-
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
             this.getSupportActionBar().hide();
         }
         catch (NullPointerException e){}
@@ -48,15 +47,15 @@ public class MainActivity extends AppCompatActivity {
             }
         }, 2500);
 
+
         final Handler handler2 = new Handler(Looper.getMainLooper());
         handler2.postDelayed(new Runnable() {
             @Override
             public void run() {
-
                 Intent intent = new Intent(MainActivity.this, MainActivity2.class);
                 startActivity(intent);
 
             }
-        }, 3500);
+        }, 4000);
     }
 }

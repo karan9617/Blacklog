@@ -38,7 +38,7 @@ public class MainActivity2 extends AppCompatActivity {
     ViewPager viewPager;
     LinearLayout dots;
     private TextView[] mDots;
-    Button next,publish;
+    Button next;
     MqttAndroidClient client;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,38 +54,35 @@ public class MainActivity2 extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
 
         next = findViewById(R.id.next);
-        publish = findViewById(R.id.publish);
         viewPager = findViewById(R.id.sliderViewPager);
         dots = findViewById(R.id.dots);
         next.setVisibility(View.INVISIBLE);
         sliderAdapter = new SliderAdapter(this);
         viewPager.setAdapter(sliderAdapter);
 
-
+        setupMqttServer();
         addDotIndicator(0);
         viewPager.addOnPageChangeListener(viewListener);
-        Intent intent = new Intent(MainActivity2.this, TrucksInfo.class);
-        startActivity(intent);
-
         listeners();
+    }
 
+    public void setupMqttServer(){
         try {
 
 
-        String clientId = MqttClient.generateClientId();
-         client = new MqttAndroidClient(MainActivity2.this, "tcp://otoserver.xyz:1883",
-                        clientId);
+            String clientId = MqttClient.generateClientId();
+            client = new MqttAndroidClient(MainActivity2.this, "tcp://otoserver.xyz:1883",
+                    clientId);
 
-        IMqttToken token = client.connect();
+            IMqttToken token = client.connect();
 
 
-        token.setActionCallback(new IMqttActionListener() {
+            token.setActionCallback(new IMqttActionListener() {
 
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     // We are connected
                     Toast.makeText(getApplicationContext(),"onSuccess",Toast.LENGTH_SHORT).show();
-
                 }
 
                 @Override
@@ -94,20 +91,14 @@ public class MainActivity2 extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"failure",Toast.LENGTH_SHORT).show();
                 }
             });
-
-
-
-
             client.setCallback(new MqttCallback() {
                 @Override
                 public void connectionLost(Throwable cause) {
-
                 }
 
                 @Override
                 public void messageArrived(String topic, MqttMessage message) throws Exception {
-                    Toast.makeText(MainActivity2.this,new String(message.getPayload())+"",Toast.LENGTH_SHORT).show();
-
+                    //Toast.makeText(TrucksInfo.this,new String(message.getPayload())+"",Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -115,107 +106,18 @@ public class MainActivity2 extends AppCompatActivity {
 
                 }
             });
-//1883
-
-           /* String topic1 = "testtopic/karanvish";
-            String payload1 = "the payload";
-            byte[] encodedPayload = new byte[0];
-            try {
-                encodedPayload = payload1.getBytes("UTF-8");
-                MqttMessage message = new MqttMessage(encodedPayload);
-                client.publish(topic1, message);
-            } catch (UnsupportedEncodingException | MqttException e) {
-                e.printStackTrace();
-            }
-
-
-            */
         } catch (MqttException e) {
-            e.printStackTrace();
-        }
-
-
-    }
-
-    public void subscribe(View v){
-
-    }
-    public void publishMethod(){
-        String topic = "BL00001";
-        String payload = "the payload";
-
-
-        byte[] encodedPayload = new byte[0];
-        try {
-            encodedPayload = payload.getBytes("UTF-8");
-            MqttMessage message = new MqttMessage(encodedPayload);
-            message.setRetained(true);
-            client.publish(topic, message);
-
-            client.setCallback(new MqttCallback() {
-                @Override
-                public void connectionLost(Throwable cause) {
-
-                }
-
-                @Override
-                public void messageArrived(String topic, MqttMessage message) throws Exception {
-
-                }
-
-                @Override
-                public void deliveryComplete(IMqttDeliveryToken token) {
-                    try {
-                        Toast.makeText(getApplicationContext(), token.getMessage() + " ", Toast.LENGTH_SHORT).show();
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-                }
-            });
-        } catch (UnsupportedEncodingException | MqttException e) {
             e.printStackTrace();
         }
     }
     public void listeners(){
-        publish.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                publishMethod();
-            }
-        });
+
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                try {
-                    if (client.isConnected()) {
-                        Log.d("tag","client.isConnected()>>" + client.isConnected());
-
-                        client.subscribe("BL00005", 1);
-                        client.setCallback(new MqttCallback() {
-                            @Override
-                            public void connectionLost(Throwable cause) {
-                                Log.d("tag","message>> connection lost");
-                            }
-//location: speed bhi daalna
-                            @Override
-                            public void messageArrived(String topic, MqttMessage message) throws Exception {
-                                Log.d("tag","message>>" + new String(message.getPayload()));
-                                Log.d("tag","topic>>" + topic);
-                                //parseMqttMessage(new String(message.getPayload()));
-
-                            }
-
-                            @Override
-                            public void deliveryComplete(IMqttDeliveryToken token) {
-
-                            }
-                        });
-                    }
-                } catch (Exception e) {
-                    Log.d("tag","Error :" + e);
-                }
-
+                Intent intent = new Intent(MainActivity2.this, LoginActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -238,7 +140,11 @@ public class MainActivity2 extends AppCompatActivity {
     ViewPager.OnPageChangeListener viewListener = new ViewPager.OnPageChangeListener() {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
+            if(position == 2){
+                next.setVisibility(View.VISIBLE);
+            }else {
+                next.setVisibility(View.INVISIBLE);
+            }
         }
 
         @Override
@@ -259,6 +165,7 @@ public class MainActivity2 extends AppCompatActivity {
     };
     @Override
     public void onBackPressed() {
-        finish();
+        finishAndRemoveTask();
+
     }
 }

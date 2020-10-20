@@ -1,16 +1,27 @@
 package com.notepadone.blacklog.Trucksinfo;
 
+/**
+ *          Dispying all the information about the trucks
+ *          LID STATUS, SPEEDS, STATUS
+ * **/
+
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 
@@ -22,6 +33,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.notepadone.blacklog.Adapters.TruckInfoAdapter;
+import com.notepadone.blacklog.LoginActivity;
 import com.notepadone.blacklog.MainActivity2;
 import com.notepadone.blacklog.Objects.ListObjectTrucks;
 import com.notepadone.blacklog.Objects.TrucksObject;
@@ -46,11 +58,24 @@ public class TrucksInfo extends AppCompatActivity {
 
     RecyclerView recyclerView;
     Toolbar toolbar;
+    ImageView backarrow;
     List<TrucksObject> trucksObjectList;
     MqttAndroidClient client;
 
-    private int mInterval = 20000; // 5 seconds by default, can be changed later
+    private int mInterval = 2000; // 5 seconds by default, can be changed later
     private Handler mHandler;
+
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel serviceChannel = new NotificationChannel(
+                    "exampleServiceChannel",
+                    "Example Service Channel",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(serviceChannel);
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try
@@ -64,7 +89,7 @@ public class TrucksInfo extends AppCompatActivity {
         setContentView(R.layout.activity_trucks_info);
 
         toolbar = findViewById(R.id.toolbar);
-
+        backarrow = findViewById(R.id.backarrow);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -78,6 +103,8 @@ public class TrucksInfo extends AppCompatActivity {
         mHandler = new Handler();
         startRepeatingTask();
 
+        listeners();
+        createNotificationChannel();
      //   loadHeroList();
         try {
 
@@ -94,7 +121,7 @@ public class TrucksInfo extends AppCompatActivity {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     // We are connected
-                    Toast.makeText(getApplicationContext(),"onSuccess",Toast.LENGTH_SHORT).show();
+                   //Toast.makeText(getApplicationContext(),"onSuccess",Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -123,14 +150,22 @@ public class TrucksInfo extends AppCompatActivity {
         }
     }
 
+    public void listeners(){
+        backarrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(TrucksInfo.this, LoginActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+    // connecting the mttq server fot information about trucks
     public void getTruckVitals(){
         try {
-
-
-
             if (client.isConnected()) {
                 Log.d("tag","client.isConnected()>>" + client.isConnected());
 
+                mInterval  =20000;
                 client.subscribe("BL00001", 1);
                 client.setCallback(new MqttCallback() {
                     @Override
@@ -159,12 +194,6 @@ public class TrucksInfo extends AppCompatActivity {
                             Log.d("Error", err.toString());
                         }
 
-
-
-                        Toast.makeText(getApplicationContext(),topic,Toast.LENGTH_SHORT).show();
-                        //parseMqttMessage(new String(message.getPayload()));
-
-                        Toast.makeText(getApplicationContext(),new String(message.getPayload()),Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
@@ -192,10 +221,12 @@ public class TrucksInfo extends AppCompatActivity {
             } finally {
                 // 100% guarantee that this always happens, even if
                 // your update method throws an exception
+
                 mHandler.postDelayed(mStatusChecker, mInterval);
             }
         }
     };
+
 
     void startRepeatingTask() {
         mStatusChecker.run();
