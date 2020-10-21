@@ -38,7 +38,7 @@ import java.util.Map;
 public class LoginActivity extends AppCompatActivity {
 
     TextView signintext;
-    Button loginButton,infobutton;
+    Button loginButton;
     EditText username, password;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,11 +67,10 @@ public class LoginActivity extends AppCompatActivity {
     public void setupID(){
         signintext = findViewById(R.id.signintext);
         String id = "No account yet then Please ";
-        String name = " Sign In";
+        String name = " Sign Up";
         String sourceString = id + "<b>" + name + "</b> ";
 
         signintext.setText(Html.fromHtml(sourceString));
-        infobutton = findViewById(R.id.infobutton);
 
         loginButton = findViewById(R.id.loginButton);
 
@@ -83,12 +82,7 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
-                /*Intent intent = new Intent(LoginActivity.this, TrucksInfo.class);
-                startActivity(intent);
-
-                 */
+            register();
 
             }
         });
@@ -100,17 +94,7 @@ public class LoginActivity extends AppCompatActivity {
 
             }
         });
-        infobutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent serviceIntent = new Intent(LoginActivity.this, ServiceForUpdate.class);
-                serviceIntent.putExtra("inputExtra", "input");
-                ContextCompat.startForegroundService(LoginActivity.this, serviceIntent);
 
-                Intent intent = new Intent(LoginActivity.this, TrucksInfo.class);
-                startActivity(intent);
-            }
-        });
     }
 
     public void register(){
@@ -123,12 +107,32 @@ public class LoginActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(String response) {
                             Log.e("LOG_VOLLEYResponse", response.toString());
+                            try {
+                                JSONObject jsonObject = new JSONObject(new String(response));
+                                Toast.makeText(getApplicationContext(),jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
+
+
+                                if(jsonObject.getString("message").equalsIgnoreCase("User Authorized")) {
+                                    Intent serviceIntent = new Intent(LoginActivity.this, ServiceForUpdate.class);
+                                    serviceIntent.putExtra("inputExtra", "input");
+                                    ContextCompat.startForegroundService(LoginActivity.this, serviceIntent);
+
+                                    Intent intent = new Intent(LoginActivity.this, TrucksInfo.class);
+                                    startActivity(intent);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
                     },
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
+
                             Log.e("LOG_VOLLEYResponseError", error.toString());
+
+                            Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+
                         }
                     }){
                 @Override

@@ -122,6 +122,7 @@ public class TrucksInfo extends AppCompatActivity {
                 public void onSuccess(IMqttToken asyncActionToken) {
                     // We are connected
                    //Toast.makeText(getApplicationContext(),"onSuccess",Toast.LENGTH_SHORT).show();
+
                 }
 
                 @Override

@@ -2,6 +2,7 @@ package com.notepadone.blacklog;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -75,12 +76,13 @@ public class RegisterActivity extends AppCompatActivity {
                 String password = passwordEditText.getText().toString();
                 String confirmPassword = passwordAgain.getText().toString();
                 if(username1.equals("") || phoneno1.equals("") || agencyName1.equals("") || email1.equals("") || officeAddresses1.equals("")
-                        || password.equals("")|| confirmPassword.equals(""))
+                        || password.equals("")|| confirmPassword.equals("") || (password != confirmPassword) || (username1.length() < 4) ||(email1.contains("@") == false))
                 {
                     Toast.makeText(getApplicationContext(),"Please enter all the fields",Toast.LENGTH_SHORT).show();
                 }
                 else{
                     register();
+
                 }
 
             }
@@ -95,13 +97,27 @@ public class RegisterActivity extends AppCompatActivity {
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
+                            try {
+                                JSONObject jsonObject = new JSONObject(new String(response));
+                                Toast.makeText(getApplicationContext(),jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
+                                if(jsonObject.getString("message").equals("User registration success")){
+
+                                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                                    startActivity(intent);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
                             Log.e("LOG_VOLLEYResponse", response.toString());
+
                         }
                     },
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             Log.e("LOG_VOLLEYResponseError", error.toString());
+
                         }
                     }){
                 @Override

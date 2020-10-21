@@ -1,13 +1,16 @@
 package com.notepadone.blacklog.Adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.notepadone.blacklog.MapsActivity;
 import com.notepadone.blacklog.Objects.TrucksObject;
 import com.notepadone.blacklog.R;
 
@@ -56,6 +59,16 @@ public class TruckInfoAdapter extends RecyclerView.Adapter<TruckInfoAdapter.Prod
         holder.fuel.setText(String.valueOf(product.getLastUpdate()));
         holder.speed.setText(String.valueOf(product.getSpeed()));
 
+        holder.locationbutton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mCtx, MapsActivity.class);
+                intent.putExtra("lat","-1");
+                intent.putExtra("long","-1");
+                mCtx.startActivity(intent);
+
+            }
+        });
     }
 
 
@@ -69,11 +82,13 @@ public class TruckInfoAdapter extends RecyclerView.Adapter<TruckInfoAdapter.Prod
 
         TextView signal, blacklogBasic, lastUpdate, fuel,speed;
         ImageView imageView;
+        Button locationbutton;
 
         public ProductViewHolder(View itemView) {
             super(itemView);
             address = itemView.findViewById(R.id.address);
             signal = itemView.findViewById(R.id.signal);
+            locationbutton = itemView.findViewById(R.id.locationbutton);
             speed = itemView.findViewById(R.id.speed);
             blacklogBasic = itemView.findViewById(R.id.blacklogBasic);
             lastUpdate = itemView.findViewById(R.id.lastUpdate);

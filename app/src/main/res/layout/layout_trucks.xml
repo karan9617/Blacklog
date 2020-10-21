@@ -14,7 +14,6 @@
         android:layout_height="wrap_content"
         android:background="#00000000"
         >
-
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="190dp"
@@ -214,7 +213,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
 
-                android:id="@+id/signUpButton"
+                android:id="@+id/locationbutton"
                 android:text="VIEW LOCATION"
 
                 android:textStyle="bold"

@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Blacklog</string>
     <string name="title_activity_maps">Map</string>
+    <string name="google_maps_key">AIzaSyAwAZo1LLmio5bvDsekHw3dJPbBflB0XSA</string>
+    <string name="loginsuccess">user authorized</string>
+    <string name="registrationSuccess">User registration success</string>
 </resources>
