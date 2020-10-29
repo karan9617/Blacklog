@@ -36,7 +36,7 @@ public class ServiceForUpdate extends Service {
     }
 
 
-    private int mInterval = 20000; // in milliseconds
+    private int mInterval = 2000; // in milliseconds
     private Handler mHandler;
     MqttAndroidClient client;
 
@@ -54,7 +54,8 @@ public class ServiceForUpdate extends Service {
                 .build();
 
         startForeground(1, notification);
-
+        mHandler = new Handler();
+        startRepeatingTask();
         try {
             String clientId = MqttClient.generateClientId();
             client = new MqttAndroidClient(getApplicationContext(), "tcp://otoserver.xyz:1883",
@@ -64,12 +65,12 @@ public class ServiceForUpdate extends Service {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     // We are connected
-                    Toast.makeText(getApplicationContext(),"onSuccess",Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(getApplicationContext(),"onSuccess",Toast.LENGTH_SHORT).show();
                 }
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     // Something went wrong e.g. connection timeout or firewall problems
-                    Toast.makeText(getApplicationContext(),"failure",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"Could not connect. Please refresh the page..",Toast.LENGTH_SHORT).show();
                 }
             });
             client.setCallback(new MqttCallback() {
@@ -90,8 +91,7 @@ public class ServiceForUpdate extends Service {
         } catch (MqttException e) {
             e.printStackTrace();
         }
-        mHandler = new Handler();
-        startRepeatingTask();
+
         //do heavy work on a background thread
         //stopSelf();
         return START_NOT_STICKY;

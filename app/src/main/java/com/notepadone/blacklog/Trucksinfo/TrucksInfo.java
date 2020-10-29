@@ -3,21 +3,33 @@ package com.notepadone.blacklog.Trucksinfo;
 /**
  *          Dispying all the information about the trucks
  *          LID STATUS, SPEEDS, STATUS
+ *
+ *
  * **/
 
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.graphics.drawable.DrawerArrowDrawable;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -32,12 +44,15 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.material.navigation.NavigationView;
 import com.notepadone.blacklog.Adapters.TruckInfoAdapter;
+import com.notepadone.blacklog.EndDrawerToggle;
 import com.notepadone.blacklog.LoginActivity;
 import com.notepadone.blacklog.MainActivity2;
 import com.notepadone.blacklog.Objects.ListObjectTrucks;
 import com.notepadone.blacklog.Objects.TrucksObject;
 import com.notepadone.blacklog.R;
+import com.notepadone.blacklog.ServiceForUpdate;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -52,16 +67,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class TrucksInfo extends AppCompatActivity {
+public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     RecyclerView recyclerView;
     Toolbar toolbar;
-    ImageView backarrow;
+    //ImageView backarrow;
     List<TrucksObject> trucksObjectList;
     MqttAndroidClient client;
+    private EndDrawerToggle drawerToggle;
+    DrawerLayout drawerLayout;
 
+
+    NavigationView navigationView;
     private int mInterval = 2000; // 5 seconds by default, can be changed later
     private Handler mHandler;
 
@@ -87,44 +108,71 @@ public class TrucksInfo extends AppCompatActivity {
         catch (NullPointerException e){}
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trucks_info);
+        drawerLayout = findViewById(R.id.drawerLayout);
+        navigationView = findViewById(R.id.navigationView);
+
+
+        Intent serviceIntent = new Intent(TrucksInfo.this, ServiceForUpdate.class);
+        serviceIntent.putExtra("inputExtra", "input");
+
+        ContextCompat.startForegroundService(TrucksInfo.this, serviceIntent);
 
         toolbar = findViewById(R.id.toolbar);
-        backarrow = findViewById(R.id.backarrow);
+
+      //  backarrow = findViewById(R.id.backarrow);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+
         trucksObjectList = new ArrayList<>();
-/*
-        trucksObjectList.add(new TrucksObject("Signal","BL0002345","NA","NA"));
-        trucksObjectList.add(new TrucksObject("Signal","BL0002345","NA","NA"));
-        trucksObjectList.add(new TrucksObject("Signal","BL0002345","NA","NA"));
-        trucksObjectList.add(new TrucksObject("Signal","BL0002345","NA","NA"));
-*/
+        register();
         mHandler = new Handler();
         startRepeatingTask();
 
+
         listeners();
         createNotificationChannel();
-     //   loadHeroList();
+
+        drawerToggle = new EndDrawerToggle(this,
+                drawerLayout,
+                toolbar,
+                R.string.open_nav_drawer,
+                R.string.close_nav_drawer,"list");
+
+
+        drawerLayout.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
+
+/*
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.open_nav_drawer,
+                R.string.close_nav_drawer);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(drawerLayout.isDrawerOpen(Gravity.RIGHT)){
+                    drawerLayout.closeDrawer(Gravity.RIGHT);
+                }
+                else {
+                    drawerLayout.openDrawer(Gravity.RIGHT);
+                }
+            }
+        });
+
+ */
+        //drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        //actionBarDrawerToggle.syncState();
+
+        navigationView.setNavigationItemSelectedListener(this);
         try {
-
-
             String clientId = MqttClient.generateClientId();
-            client = new MqttAndroidClient(TrucksInfo.this, "tcp://otoserver.xyz:1883",
-                    clientId);
-
+            client = new MqttAndroidClient(TrucksInfo.this, "tcp://otoserver.xyz:1883", clientId);
             IMqttToken token = client.connect();
-
-
             token.setActionCallback(new IMqttActionListener() {
-
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    // We are connected
-                   //Toast.makeText(getApplicationContext(),"onSuccess",Toast.LENGTH_SHORT).show();
-
+                    //Toast.makeText(getApplicationContext(),"onSuccess",Toast.LENGTH_SHORT).show();
                 }
-
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     // Something went wrong e.g. connection timeout or firewall problems
@@ -138,7 +186,7 @@ public class TrucksInfo extends AppCompatActivity {
 
                 @Override
                 public void messageArrived(String topic, MqttMessage message) throws Exception {
-                    Toast.makeText(TrucksInfo.this,new String(message.getPayload())+"",Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(TrucksInfo.this,new String(message.getPayload())+"",Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -152,22 +200,26 @@ public class TrucksInfo extends AppCompatActivity {
     }
 
     public void listeners(){
-        backarrow.setOnClickListener(new View.OnClickListener() {
+       /* backarrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(TrucksInfo.this, LoginActivity.class);
                 startActivity(intent);
             }
         });
+
+        */
     }
     // connecting the mttq server fot information about trucks
     public void getTruckVitals(){
         try {
             if (client.isConnected()) {
                 Log.d("tag","client.isConnected()>>" + client.isConnected());
-
                 mInterval  =20000;
-                client.subscribe("BL00001", 1);
+                //client.subscribe("BL00001", 1);
+                for(int i =0;i < trucksObjectList.size();i++){
+                    client.subscribe(trucksObjectList.get(i).getDevice_id(), 1);
+                }
                 client.setCallback(new MqttCallback() {
                     @Override
                     public void connectionLost(Throwable cause) {
@@ -178,15 +230,18 @@ public class TrucksInfo extends AppCompatActivity {
                     public void messageArrived(String topic, MqttMessage message) throws Exception {
                         Log.d("tag","message>>" + new String(message.getPayload()));
                         Log.d("tag","topic>>" + topic);
-
-                        trucksObjectList.clear();
+                     //   Toast.makeText(getApplicationContext(),"arrived here"+new String(message.getPayload()),Toast.LENGTH_LONG).show();
                         try {
                             JSONObject jsonObject = new JSONObject(new String(message.getPayload()));
 
-                            trucksObjectList.add(new TrucksObject("Signal",jsonObject.getString("did"),jsonObject.getString("lid_status"),topic,jsonObject.getString("speed")));
-                            trucksObjectList.add(new TrucksObject("Signal","BL0002345","NA","NA",jsonObject.getString("speed")));
-                            trucksObjectList.add(new TrucksObject("Signal","BL0002345","NA","NA",jsonObject.getString("speed")));
-                            trucksObjectList.add(new TrucksObject("Signal","BL0002345","NA","NA",jsonObject.getString("speed")));
+                            for(int i=0;i<trucksObjectList.size();i++){
+                                if (trucksObjectList.get(i).getDevice_id().equalsIgnoreCase(jsonObject.getString("did"))){
+                                    trucksObjectList.get(i).setSignal(jsonObject.getString("gsm_signal"));
+
+                                    trucksObjectList.get(i).setFuelLid(jsonObject.getString("lid_status"));
+                                    trucksObjectList.get(i).setSpeed(jsonObject.getString("speed") + jsonObject.getString("speed_unit"));
+                                }
+                            }
 
                             TruckInfoAdapter adapter = new TruckInfoAdapter(getApplicationContext(),trucksObjectList);
 
@@ -194,9 +249,7 @@ public class TrucksInfo extends AppCompatActivity {
                         }catch (JSONException err){
                             Log.d("Error", err.toString());
                         }
-
                     }
-
                     @Override
                     public void deliveryComplete(IMqttDeliveryToken token) {
 
@@ -220,14 +273,72 @@ public class TrucksInfo extends AppCompatActivity {
             try {
                 getTruckVitals(); //this function can change value of mInterval.
             } finally {
-                // 100% guarantee that this always happens, even if
-                // your update method throws an exception
-
                 mHandler.postDelayed(mStatusChecker, mInterval);
             }
         }
     };
 
+    public void register(){
+        try {
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            String URL = "https://api.blacklog.in/vehicle/get_vehicle.php";
+
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, URL,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                          //  Toast.makeText(getApplicationContext(),"success:"+new String(response),Toast.LENGTH_LONG).show();
+                            Log.e("LOG_VOLLEYResponse", response.toString());
+                            try {
+                                JSONObject jsonObject = new JSONObject(new String(response));
+                                JSONArray jsonArrayForVehicles = jsonObject.getJSONArray("vehicles");
+
+                                //now looping through all the elements of the json array
+                                for (int i = 0; i < jsonArrayForVehicles.length(); i++) {
+                                    //getting the json object of the particular index inside the array
+                                    JSONObject vehicleObject = jsonArrayForVehicles.getJSONObject(i);
+
+                                    //creating a hero object and giving them the values from json object
+                                    long time = Long.parseLong(vehicleObject.getString("lid_status_timestamp"));
+                                    double t = (time)/3600;
+
+                                    trucksObjectList.add(new TrucksObject(vehicleObject.getString("device_id"),vehicleObject.getString("vehicle_no"),vehicleObject.getString("blacklog_model"),t+"",vehicleObject.getString("lid_status"),"NA"));
+
+                                }
+                                TruckInfoAdapter adapter = new TruckInfoAdapter(getApplicationContext(),trucksObjectList);
+                                recyclerView.getRecycledViewPool().clear();
+                                adapter.notifyDataSetChanged();
+                                recyclerView.setAdapter(adapter);
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+
+                            Log.e("LOG_VOLLEYResponseError", error.toString());
+
+                        }
+                    }){
+                @Override
+                protected Map<String,String> getParams(){
+                    Map<String,String> params = new HashMap<String, String>();
+                    params.put("user_id","1234567890cwcQd6vAcg");
+                    params.put("vehicle_no","");
+                    return params;
+                }
+
+            };
+
+            requestQueue.add(stringRequest);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     void startRepeatingTask() {
         mStatusChecker.run();
@@ -237,45 +348,31 @@ public class TrucksInfo extends AppCompatActivity {
         mHandler.removeCallbacks(mStatusChecker);
     }
 
-    private void loadHeroList() {
-        //getting the progressbar
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, "http://api.blacklog.otoserver.xyz/vehicle/get_vehicle_types.php",
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
 
-                        try {
-                            //getting the whole json object from the response
-                            JSONObject obj = new JSONObject(response);
-                            JSONArray heroArray = obj.getJSONArray("vehicle_types");
-                            for (int i = 0; i < heroArray.length(); i++) {
-                                JSONObject heroObject = heroArray.getJSONObject(i);
-                                TrucksObject hero = new TrucksObject(heroObject.getString("vehicle_code"), heroObject.getString("vehicle_type"),
-                                        heroObject.getString("vehicle_description"),heroObject.getString("vehicle_type"),"");
 
-                                trucksObjectList.add(hero);
-                            }
-                            TruckInfoAdapter adapter = new TruckInfoAdapter(getApplicationContext(),trucksObjectList);
+    @Override
+    public void onBackPressed() {
 
-                            recyclerView.setAdapter(adapter);
+        this.finishAffinity();
+    }
 
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        //displaying the error in toast if occurrs
-                        Toast.makeText(getApplicationContext(), error.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
-        //creating a request queue
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        switch (menuItem.getItemId()){
 
-        //adding the string request to request queue
-        requestQueue.add(stringRequest);
+            case R.id.nav_logout:
+                SharedPreferences sh = getSharedPreferences("MySharedPref",MODE_PRIVATE);
+                sh.edit().clear().commit();
+                Intent intent = new Intent(TrucksInfo.this, LoginActivity.class);
+                startActivity(intent);
+                break;
+        }
+        return false;
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
     }
 }

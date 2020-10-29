@@ -3,7 +3,9 @@ package com.notepadone.blacklog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
@@ -53,17 +55,26 @@ public class MainActivity2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
-        next = findViewById(R.id.next);
-        viewPager = findViewById(R.id.sliderViewPager);
-        dots = findViewById(R.id.dots);
-        next.setVisibility(View.INVISIBLE);
-        sliderAdapter = new SliderAdapter(this);
-        viewPager.setAdapter(sliderAdapter);
+        SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+        String usernameString = sharedPref.getString("usernameShared","");
+        if(usernameString.length() == 0) {
+            next = findViewById(R.id.next);
+            viewPager = findViewById(R.id.sliderViewPager);
+            dots = findViewById(R.id.dots);
+            next.setVisibility(View.INVISIBLE);
+            sliderAdapter = new SliderAdapter(this);
+            viewPager.setAdapter(sliderAdapter);
 
-        setupMqttServer();
-        addDotIndicator(0);
-        viewPager.addOnPageChangeListener(viewListener);
-        listeners();
+            setupMqttServer();
+            addDotIndicator(0);
+            viewPager.addOnPageChangeListener(viewListener);
+            listeners();
+        }
+        else
+        {
+            Intent intent = new Intent(MainActivity2.this, TrucksInfo.class);
+            startActivity(intent);
+        }
     }
 
     public void setupMqttServer(){
@@ -165,7 +176,7 @@ public class MainActivity2 extends AppCompatActivity {
     };
     @Override
     public void onBackPressed() {
-        finishAndRemoveTask();
+        finish();
 
     }
 }

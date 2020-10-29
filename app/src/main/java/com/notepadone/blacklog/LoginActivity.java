@@ -3,8 +3,12 @@ package com.notepadone.blacklog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.os.Bundle;
+import android.security.NetworkSecurityPolicy;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
@@ -40,6 +44,12 @@ public class LoginActivity extends AppCompatActivity {
     TextView signintext;
     Button loginButton;
     EditText username, password;
+
+    public static final String MyPREFERENCES = "MyPrefs" ;
+    public static final String usernameShared = "usernameShared";
+    public static final String passwordShared = "passwordShared";
+
+    SharedPreferences sharedpreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // creating full screen view
@@ -56,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-
+        getApplicationInfo().flags &= ApplicationInfo.FLAG_DEBUGGABLE;
         setupID();
 
 
@@ -91,12 +101,9 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
                 startActivity(intent);
-
             }
         });
-
     }
-
     public void register(){
         try {
             RequestQueue requestQueue = Volley.newRequestQueue(this);
@@ -109,14 +116,14 @@ public class LoginActivity extends AppCompatActivity {
                             Log.e("LOG_VOLLEYResponse", response.toString());
                             try {
                                 JSONObject jsonObject = new JSONObject(new String(response));
-                                Toast.makeText(getApplicationContext(),jsonObject.getString("message"),Toast.LENGTH_SHORT).show();
-
-
+                                Toast.makeText(getApplicationContext(),jsonObject.getString("message"),Toast.LENGTH_LONG).show();
                                 if(jsonObject.getString("message").equalsIgnoreCase("User Authorized")) {
-                                    Intent serviceIntent = new Intent(LoginActivity.this, ServiceForUpdate.class);
-                                    serviceIntent.putExtra("inputExtra", "input");
-                                    ContextCompat.startForegroundService(LoginActivity.this, serviceIntent);
-
+                                    SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
+                                    SharedPreferences.Editor myEdit = sharedPreferences.edit();
+                                    myEdit.putString("username",username.getText().toString());
+                                    myEdit.putString("password",password.getText().toString());
+                                    //myEdit.putString("token",jsonObject.getString("token"));
+                                    myEdit.commit();
                                     Intent intent = new Intent(LoginActivity.this, TrucksInfo.class);
                                     startActivity(intent);
                                 }
@@ -130,8 +137,6 @@ public class LoginActivity extends AppCompatActivity {
                         public void onErrorResponse(VolleyError error) {
 
                             Log.e("LOG_VOLLEYResponseError", error.toString());
-
-                            Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
 
                         }
                     }){
@@ -199,5 +204,10 @@ public class LoginActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        this.finishAffinity();
     }
 }

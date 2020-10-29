@@ -36,14 +36,11 @@ public class RegisterActivity extends AppCompatActivity {
     EditText username,phoneno,email,agencyName,officeAddresses,passwordEditText,passwordAgain;
     Button signUpButton;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-
+    protected void onCreate(Bundle savedInstanceState){
         try
         {
-
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-
             this.getSupportActionBar().hide();
         }
         catch (NullPointerException e){}

@@ -1,5 +1,7 @@
 package com.notepadone.blacklog;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentActivity;
 
 import android.content.Intent;
@@ -15,6 +17,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.navigation.NavigationView;
 import com.notepadone.blacklog.Trucksinfo.TrucksInfo;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -22,6 +25,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     String lat,longitude;
     ImageView backarrow;
+    Toolbar toolbar;
+    private EndDrawerToggle drawerToggle;
+    DrawerLayout drawerLayout;
+    NavigationView navigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         try
@@ -36,7 +44,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        backarrow = findViewById(R.id.backarrow);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -46,13 +53,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         lat = i.getStringExtra("lat");
         longitude  = i.getStringExtra("lat");
 
-        backarrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MapsActivity.this, TrucksInfo.class);
-                startActivity(intent);
-            }
-        });
+        drawerLayout = findViewById(R.id.drawerLayout);
+        navigationView = findViewById(R.id.navigationView);
+        toolbar = findViewById(R.id.toolbar);
+
+
+
+        drawerToggle = new EndDrawerToggle(this,
+                drawerLayout,
+                toolbar,
+                R.string.open_nav_drawer,
+                R.string.close_nav_drawer,"maps");
+
+
+        drawerLayout.addDrawerListener(drawerToggle);
+        drawerToggle.syncState();
+
     }
 
     /**

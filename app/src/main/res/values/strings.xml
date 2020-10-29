@@ -4,4 +4,7 @@
     <string name="google_maps_key">AIzaSyAwAZo1LLmio5bvDsekHw3dJPbBflB0XSA</string>
     <string name="loginsuccess">user authorized</string>
     <string name="registrationSuccess">User registration success</string>
+
+    <string name="open_nav_drawer">Open Nav Drawer</string>
+    <string name="close_nav_drawer">Close Nav Drawer</string>
 </resources>
