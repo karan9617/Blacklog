@@ -2,7 +2,7 @@
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">api.blacklog.in</domain>
-        <domain includeSubdomains="true">otoserver.xyz</domain>
+
 
     </domain-config>
 </network-security-config>
