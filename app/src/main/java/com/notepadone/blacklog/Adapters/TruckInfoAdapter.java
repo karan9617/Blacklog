@@ -63,6 +63,7 @@ public class TruckInfoAdapter extends RecyclerView.Adapter<TruckInfoAdapter.Prod
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mCtx, MapsActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("lat","-1");
                 intent.putExtra("long","-1");
                 mCtx.startActivity(intent);

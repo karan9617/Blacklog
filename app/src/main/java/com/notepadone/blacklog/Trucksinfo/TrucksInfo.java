@@ -195,6 +195,8 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
                 }
             });
         } catch (MqttException e) {
+            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+
             e.printStackTrace();
         }
     }
@@ -247,6 +249,8 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
 
                             recyclerView.setAdapter(adapter);
                         }catch (JSONException err){
+                            Toast.makeText(getApplicationContext(),err.getMessage(),Toast.LENGTH_LONG).show();
+
                             Log.d("Error", err.toString());
                         }
                     }
@@ -257,6 +261,8 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
                 });
             }
         } catch (Exception e) {
+            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+
             Log.d("tag","Error :" + e);
         }
     }
@@ -281,7 +287,7 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
     public void register(){
         try {
             RequestQueue requestQueue = Volley.newRequestQueue(this);
-            String URL = "https://api.blacklog.in/vehicle/get_vehicle.php";
+            String URL = "http://api.blacklog.in/vehicle/get_vehicle.php";
 
             StringRequest stringRequest = new StringRequest(Request.Method.POST, URL,
                     new Response.Listener<String>() {
@@ -312,6 +318,7 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
 
 
                             } catch (JSONException e) {
+                                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
                                 e.printStackTrace();
                             }
                         }
@@ -319,6 +326,7 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getApplicationContext(),error.getMessage(),Toast.LENGTH_LONG).show();
 
                             Log.e("LOG_VOLLEYResponseError", error.toString());
 
@@ -336,6 +344,7 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
 
             requestQueue.add(stringRequest);
         } catch (Exception e) {
+            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
     }

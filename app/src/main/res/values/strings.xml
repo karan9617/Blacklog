@@ -7,4 +7,10 @@
 
     <string name="open_nav_drawer">Open Nav Drawer</string>
     <string name="close_nav_drawer">Close Nav Drawer</string>
+    <string name="no_account_yet_please_sign_in">No account yet Please Sign In</string>
+    <string name="login">LOGIN</string>
+    <string name="blacklog">Blacklog</string>
+    <string name="password">Password</string>
+    <string name="username">Username</string>
+    <string name="forgot_password">Forgot Password</string>
 </resources>

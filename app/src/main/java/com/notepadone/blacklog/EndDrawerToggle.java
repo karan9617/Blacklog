@@ -48,7 +48,7 @@ public class EndDrawerToggle implements DrawerLayout.DrawerListener {
         backarrow.setImageResource(R.drawable.ic_baseline_arrow_back_ios_24);
 
         imageView = new ImageView(activity);
-        imageView.setImageResource(R.drawable.cross_icon);
+      //  imageView.setImageResource(R.drawable.cross_icon);
 
         TextView textView = new TextView(activity);
         textView.setTextColor(Color.parseColor("#D4AF37"));
