@@ -82,7 +82,7 @@ public class MainActivity2 extends AppCompatActivity {
 
 
             String clientId = MqttClient.generateClientId();
-            client = new MqttAndroidClient(MainActivity2.this, "tcp://otoserver.xyz:1883",
+            client = new MqttAndroidClient(MainActivity2.this, "tcp://otomator.com:1883",
                     clientId);
 
             IMqttToken token = client.connect();

@@ -58,7 +58,7 @@ public class ServiceForUpdate extends Service {
         startRepeatingTask();
         try {
             String clientId = MqttClient.generateClientId();
-            client = new MqttAndroidClient(getApplicationContext(), "tcp://otoserver.xyz:1883",
+            client = new MqttAndroidClient(getApplicationContext(), "tcp://otomator.com:1883",
                     clientId);
             IMqttToken token = client.connect();
             token.setActionCallback(new IMqttActionListener() {

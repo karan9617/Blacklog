@@ -170,7 +170,7 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
         navigationView.setNavigationItemSelectedListener(this);
         try {
             String clientId = MqttClient.generateClientId();
-            client = new MqttAndroidClient(TrucksInfo.this, "tcp://otoserver.xyz:1883", clientId);
+            client = new MqttAndroidClient(TrucksInfo.this, "tcp://otomator.com:1883", clientId);
             IMqttToken token = client.connect();
             token.setActionCallback(new IMqttActionListener() {
                 @Override
@@ -319,16 +319,18 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
                                     //getting the json object of the particular index inside the array
                                     JSONObject vehicleObject = jsonArrayForVehicles.getJSONObject(i);
 
+                                    Toast.makeText(getApplicationContext(),vehicleObject.getString("vehicle_longitude"),Toast.LENGTH_LONG).show();
                                     //creating a hero object and giving them the values from json object
                                     long time = Long.parseLong(vehicleObject.getString("lid_status_timestamp"));
+
                                     double t = (time)/3600;
 
-                                    trucksObjectList.add(new TrucksObject(vehicleObject.getString("vehicle_longitude"),vehicleObject.getString("vehicle_latitude"),t+"",vehicleObject.getString("device_id"),vehicleObject.getString("vehicle_no"),vehicleObject.getString("blacklog_model"),t+"",vehicleObject.getString("lid_status"),"NA"));
+                                    trucksObjectList.add(new TrucksObject(vehicleObject.getString("vehicle_longitude"),vehicleObject.getString("vehicle_latitude"),vehicleObject.getString("lid_status_timestamp"),vehicleObject.getString("device_id"),vehicleObject.getString("vehicle_no"),vehicleObject.getString("blacklog_model"),vehicleObject.getString("lid_status"),vehicleObject.getString("lid_status"),"NA"));
 
                                 }
                                 TruckInfoAdapter adapter = new TruckInfoAdapter(getApplicationContext(),trucksObjectList);
-                                recyclerView.getRecycledViewPool().clear();
-                                adapter.notifyDataSetChanged();
+                                //recyclerView.getRecycledViewPool().clear();
+                                //adapter.notifyDataSetChanged();
                                 recyclerView.setAdapter(adapter);
 
 

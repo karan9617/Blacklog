@@ -51,7 +51,8 @@ public class TruckInfoAdapter extends RecyclerView.Adapter<TruckInfoAdapter.Prod
         return new ProductViewHolder(view);
     }
     public String getISTTime(String s){
-        Date date = new Date(1318386508000L);
+
+        Date date = new Date(Long.parseLong(s));
         DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
         format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
         String formatted = format.format(date);
@@ -68,17 +69,15 @@ public class TruckInfoAdapter extends RecyclerView.Adapter<TruckInfoAdapter.Prod
         holder.signal.setText(product.getSignal());
         holder.blacklogBasic.setText(product.getBasic());
 
-        String ss = String.valueOf(product.getFuelLid());
+        String ss = String.valueOf(product.getTs());
 
         holder.lastUpdate.setText(getISTTime(ss));
-        holder.fuel.setText(String.valueOf(product.getLastUpdate()));
+        holder.fuel.setText(String.valueOf(product.getFuelLid()));
         holder.speed.setText(String.valueOf(product.getSpeed()));
 
         holder.locationbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-
                 Intent intent = new Intent(mCtx, MapsActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.putExtra("lat",product.getVehicle_latitude());
