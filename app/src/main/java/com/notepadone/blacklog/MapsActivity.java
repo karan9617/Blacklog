@@ -56,9 +56,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationView);
         toolbar = findViewById(R.id.toolbar);
-
-
-
         drawerToggle = new EndDrawerToggle(this,
                 drawerLayout,
                 toolbar,
@@ -68,7 +65,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
-
     }
 
     /**
@@ -86,7 +82,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         // Add a marker in Sydney and move the camera
         //adjust with the longitude and latitude
-        LatLng sydney = new LatLng(-34, 151);
+        LatLng sydney = new LatLng(Double.parseDouble(longitude),Double.parseDouble(lat));
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
     }

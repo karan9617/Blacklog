@@ -23,18 +23,20 @@
         -->
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps" >
-
-
+            android:label="@string/title_activity_maps"
+            android:screenOrientation="portrait">
         </activity>
         <activity android:name=".RegisterActivity"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize"
+            android:screenOrientation="portrait"/>
         <activity android:name=".LoginActivity"
             android:windowSoftInputMode="adjustResize"
+            android:screenOrientation="portrait"
             />
         <activity
             android:name=".MainActivity2"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait">

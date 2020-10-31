@@ -14,7 +14,11 @@ import com.notepadone.blacklog.MapsActivity;
 import com.notepadone.blacklog.Objects.TrucksObject;
 import com.notepadone.blacklog.R;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -46,6 +50,14 @@ public class TruckInfoAdapter extends RecyclerView.Adapter<TruckInfoAdapter.Prod
         View view = inflater.inflate(R.layout.layout_trucks, null);
         return new ProductViewHolder(view);
     }
+    public String getISTTime(String s){
+        Date date = new Date(1318386508000L);
+        DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+        String formatted = format.format(date);
+
+        return formatted;
+    }
 
     @Override
     public void onBindViewHolder(ProductViewHolder holder, int position) {
@@ -55,17 +67,22 @@ public class TruckInfoAdapter extends RecyclerView.Adapter<TruckInfoAdapter.Prod
         //binding the data with the viewholder views
         holder.signal.setText(product.getSignal());
         holder.blacklogBasic.setText(product.getBasic());
-        holder.lastUpdate.setText(String.valueOf(product.getFuelLid()));
+
+        String ss = String.valueOf(product.getFuelLid());
+
+        holder.lastUpdate.setText(getISTTime(ss));
         holder.fuel.setText(String.valueOf(product.getLastUpdate()));
         holder.speed.setText(String.valueOf(product.getSpeed()));
 
         holder.locationbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
                 Intent intent = new Intent(mCtx, MapsActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.putExtra("lat","-1");
-                intent.putExtra("long","-1");
+                intent.putExtra("lat",product.getVehicle_latitude());
+                intent.putExtra("long",product.getVehicle_longitude());
                 mCtx.startActivity(intent);
 
             }

@@ -66,10 +66,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -239,7 +243,9 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
                             for(int i=0;i<trucksObjectList.size();i++){
                                 if (trucksObjectList.get(i).getDevice_id().equalsIgnoreCase(jsonObject.getString("did"))){
                                     trucksObjectList.get(i).setSignal(jsonObject.getString("gsm_signal"));
-
+                                    trucksObjectList.get(i).setVehicle_latitude(jsonObject.getString("lat"));
+                                    trucksObjectList.get(i).setVehicle_longitude(jsonObject.getString("lon"));
+                                    trucksObjectList.get(i).setTs(jsonObject.getString("ts"));
                                     trucksObjectList.get(i).setFuelLid(jsonObject.getString("lid_status"));
                                     trucksObjectList.get(i).setSpeed(jsonObject.getString("speed") + jsonObject.getString("speed_unit"));
                                 }
@@ -265,6 +271,15 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
 
             Log.d("tag","Error :" + e);
         }
+    }
+
+    public String getISTTime(String s){
+        Date date = new Date(1318386508000L);
+        DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+        format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
+        String formatted = format.format(date);
+
+        return formatted;
     }
 
     @Override
@@ -308,7 +323,7 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
                                     long time = Long.parseLong(vehicleObject.getString("lid_status_timestamp"));
                                     double t = (time)/3600;
 
-                                    trucksObjectList.add(new TrucksObject(vehicleObject.getString("device_id"),vehicleObject.getString("vehicle_no"),vehicleObject.getString("blacklog_model"),t+"",vehicleObject.getString("lid_status"),"NA"));
+                                    trucksObjectList.add(new TrucksObject(vehicleObject.getString("vehicle_longitude"),vehicleObject.getString("vehicle_latitude"),t+"",vehicleObject.getString("device_id"),vehicleObject.getString("vehicle_no"),vehicleObject.getString("blacklog_model"),t+"",vehicleObject.getString("lid_status"),"NA"));
 
                                 }
                                 TruckInfoAdapter adapter = new TruckInfoAdapter(getApplicationContext(),trucksObjectList);
