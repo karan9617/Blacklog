@@ -143,8 +143,6 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
                 toolbar,
                 R.string.open_nav_drawer,
                 R.string.close_nav_drawer,"list");
-
-
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
 
