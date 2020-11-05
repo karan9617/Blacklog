@@ -145,26 +145,6 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
                 R.string.close_nav_drawer,"list");
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
-
-/*
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.open_nav_drawer,
-                R.string.close_nav_drawer);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(drawerLayout.isDrawerOpen(Gravity.RIGHT)){
-                    drawerLayout.closeDrawer(Gravity.RIGHT);
-                }
-                else {
-                    drawerLayout.openDrawer(Gravity.RIGHT);
-                }
-            }
-        });
-
- */
-        //drawerLayout.addDrawerListener(actionBarDrawerToggle);
-        //actionBarDrawerToggle.syncState();
-
         navigationView.setNavigationItemSelectedListener(this);
         try {
             String clientId = MqttClient.generateClientId();
@@ -178,7 +158,7 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     // Something went wrong e.g. connection timeout or firewall problems
-                    Toast.makeText(getApplicationContext(),"failure",Toast.LENGTH_SHORT).show();
+                   // Toast.makeText(getApplicationContext(),"failure",Toast.LENGTH_SHORT).show();
                 }
             });
             client.setCallback(new MqttCallback() {
@@ -197,8 +177,6 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
                 }
             });
         } catch (MqttException e) {
-            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
-
             e.printStackTrace();
         }
     }
@@ -265,19 +243,10 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
                 });
             }
         } catch (Exception e) {
-            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
 
             Log.d("tag","Error :" + e);
         }
-    }
-
-    public String getISTTime(String s){
-        Date date = new Date(1318386508000L);
-        DateFormat format = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
-        format.setTimeZone(TimeZone.getTimeZone("Etc/UTC"));
-        String formatted = format.format(date);
-
-        return formatted;
     }
 
     @Override

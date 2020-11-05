@@ -34,6 +34,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
 
+        android:layout_alignBottom="@+id/logoblacklog"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="30dp"
         android:orientation="vertical"

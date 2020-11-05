@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -85,6 +86,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             LatLng sydney = new LatLng(Double.parseDouble(lat),Double.parseDouble(longitude));
             mMap.addMarker(new MarkerOptions().position(sydney).title("Current Location"));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+            Toast.makeText(getApplicationContext(),"Location not available",Toast.LENGTH_LONG).show();
         }
         else{
             LatLng sydney = new LatLng(Double.parseDouble(lat),Double.parseDouble(longitude));
