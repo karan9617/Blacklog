@@ -27,6 +27,8 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Random;
+
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
@@ -35,7 +37,7 @@ public class ServiceForUpdate extends Service implements ClientList {
     public void onCreate() {
         super.onCreate();
     }
-    private int mInterval = 2000; // in milliseconds
+    private int mInterval = 20000; // in milliseconds
     private Handler mHandler;
     MqttAndroidClient client;
 
@@ -130,15 +132,18 @@ public class ServiceForUpdate extends Service implements ClientList {
                         JSONObject jsonObject = new JSONObject(new String(message.getPayload()));
                         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
                         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, 0);
+/*
+*   closed open and closed (open only notification)
+* */
                         Notification notification = new NotificationCompat.Builder(getApplicationContext(), "exampleServiceChannel")
                                 .setContentTitle(topic)
-                                .setContentText( "Lid Status :"+ jsonObject.getString("lid_status")+"\n"+
-                                            "Speed:"+jsonObject.getString("speed")+jsonObject.getString("spped_unit")+"\n"
-                                        )
+                                .setContentText( "Lid Status :"+ jsonObject.getString("lid_status"))
                                 .setSmallIcon(R.drawable.playstore).setContentIntent(pendingIntent).build();
                         NotificationManager notificationManager=  (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
                         int cv = Integer.parseInt(topic.substring(topic.length()-1));
-                        notificationManager.notify(cv,notification);
+                        Random rn  = new Random();
+
+                        notificationManager.notify(rn.nextInt(9),notification);
                     }
                     @Override
                     public void deliveryComplete(IMqttDeliveryToken token) {
