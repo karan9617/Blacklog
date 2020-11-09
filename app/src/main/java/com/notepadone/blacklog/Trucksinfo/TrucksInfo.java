@@ -75,7 +75,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
-public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, ClientList {
 
     RecyclerView recyclerView;
     Toolbar toolbar;
@@ -207,7 +207,6 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
                     public void connectionLost(Throwable cause) {
                         Log.d("tag", "message>> connection lost");
                     }
-
                     @Override
                     public void messageArrived(String topic, MqttMessage message) throws Exception {
                         Log.d("tag","message>>" + new String(message.getPayload()));
@@ -217,6 +216,7 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
                             JSONObject jsonObject = new JSONObject(new String(message.getPayload()));
 
                             for(int i=0;i<trucksObjectList.size();i++){
+                                ClientList.clientList.add(trucksObjectList.get(i).getDevice_id());
                                 if (trucksObjectList.get(i).getDevice_id().equalsIgnoreCase(jsonObject.getString("did"))){
                                     trucksObjectList.get(i).setSignal(jsonObject.getString("gsm_signal"));
                                     trucksObjectList.get(i).setVehicle_latitude(jsonObject.getString("lat"));
@@ -226,7 +226,6 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
                                     trucksObjectList.get(i).setSpeed(jsonObject.getString("speed") + jsonObject.getString("speed_unit"));
                                 }
                             }
-
                             TruckInfoAdapter adapter = new TruckInfoAdapter(getApplicationContext(),trucksObjectList);
 
                             recyclerView.setAdapter(adapter);
@@ -270,7 +269,6 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
         try {
             RequestQueue requestQueue = Volley.newRequestQueue(this);
             String URL = "http://api.blacklog.in/vehicle/get_vehicle.php";
-
             StringRequest stringRequest = new StringRequest(Request.Method.POST, URL,
                     new Response.Listener<String>() {
                         @Override
@@ -280,7 +278,6 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
                             try {
                                 JSONObject jsonObject = new JSONObject(new String(response));
                                 JSONArray jsonArrayForVehicles = jsonObject.getJSONArray("vehicles");
-
                                 //now looping through all the elements of the json array
                                 for (int i = 0; i < jsonArrayForVehicles.length(); i++) {
                                     //getting the json object of the particular index inside the array
@@ -289,18 +286,13 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
                                     Toast.makeText(getApplicationContext(),vehicleObject.getString("vehicle_longitude"),Toast.LENGTH_LONG).show();
                                     //creating a hero object and giving them the values from json object
                                     long time = Long.parseLong(vehicleObject.getString("lid_status_timestamp"));
-
                                     double t = (time)/3600;
-
                                     trucksObjectList.add(new TrucksObject(vehicleObject.getString("vehicle_longitude"),vehicleObject.getString("vehicle_latitude"),vehicleObject.getString("lid_status_timestamp"),vehicleObject.getString("device_id"),vehicleObject.getString("vehicle_no"),vehicleObject.getString("blacklog_model"),vehicleObject.getString("lid_status"),vehicleObject.getString("lid_status"),"NA"));
-
                                 }
                                 TruckInfoAdapter adapter = new TruckInfoAdapter(getApplicationContext(),trucksObjectList);
                                 //recyclerView.getRecycledViewPool().clear();
                                 //adapter.notifyDataSetChanged();
                                 recyclerView.setAdapter(adapter);
-
-
                             } catch (JSONException e) {
                                 Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
                                 e.printStackTrace();
@@ -336,7 +328,6 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
     void startRepeatingTask() {
         mStatusChecker.run();
     }
-
     void stopRepeatingTask() {
         mHandler.removeCallbacks(mStatusChecker);
     }
@@ -353,7 +344,6 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
         switch (menuItem.getItemId()){
-
             case R.id.nav_logout:
                 SharedPreferences sh = getSharedPreferences("MySharedPref",MODE_PRIVATE);
                 sh.edit().clear().commit();
@@ -363,7 +353,6 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
         }
         return false;
     }
-
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 

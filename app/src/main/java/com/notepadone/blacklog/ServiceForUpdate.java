@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.notepadone.blacklog.Adapters.TruckInfoAdapter;
 import com.notepadone.blacklog.Objects.TrucksObject;
+import com.notepadone.blacklog.Trucksinfo.ClientList;
 import com.notepadone.blacklog.Trucksinfo.TrucksInfo;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
@@ -29,13 +30,11 @@ import org.json.JSONObject;
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
-public class ServiceForUpdate extends Service {
+public class ServiceForUpdate extends Service implements ClientList {
     @Override
     public void onCreate() {
         super.onCreate();
     }
-
-
     private int mInterval = 2000; // in milliseconds
     private Handler mHandler;
     MqttAndroidClient client;
@@ -57,6 +56,7 @@ public class ServiceForUpdate extends Service {
         mHandler = new Handler();
         startRepeatingTask();
         try {
+
             String clientId = MqttClient.generateClientId();
             client = new MqttAndroidClient(getApplicationContext(), "tcp://otomator.com:1883",
                     clientId);
@@ -111,8 +111,12 @@ public class ServiceForUpdate extends Service {
             if (client.isConnected()) {
                 Log.d("tag","client.isConnected()>>" + client.isConnected());
 
-                client.subscribe("BL00001", 1);
+                for(String s: ClientList.clientList){
+                    client.subscribe(s,1);
+                }
+                //client.subscribe("BL00001", 1);
                 client.setCallback(new MqttCallback() {
+
                     @Override
                     public void connectionLost(Throwable cause) {
                         Log.d("tag", "message>> connection lost");
@@ -124,19 +128,17 @@ public class ServiceForUpdate extends Service {
                         Log.d("tag","topic>>" + topic);
 
                         JSONObject jsonObject = new JSONObject(new String(message.getPayload()));
-
                         Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
-                        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),
-                                0, notificationIntent, 0);
+                        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, 0);
                         Notification notification = new NotificationCompat.Builder(getApplicationContext(), "exampleServiceChannel")
                                 .setContentTitle(topic)
-                                .setContentText( "Lid Status :"+ jsonObject.getString("lid_status"))
-                                .setSmallIcon(R.drawable.playstore)
-                                .setContentIntent(pendingIntent)
-                                .build();
+                                .setContentText( "Lid Status :"+ jsonObject.getString("lid_status")+"\n"+
+                                            "Speed:"+jsonObject.getString("speed")+jsonObject.getString("spped_unit")+"\n"
+                                        )
+                                .setSmallIcon(R.drawable.playstore).setContentIntent(pendingIntent).build();
                         NotificationManager notificationManager=  (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-                        notificationManager.notify(0,notification);
-
+                        int cv = Integer.parseInt(topic.substring(topic.length()-1));
+                        notificationManager.notify(cv,notification);
                     }
                     @Override
                     public void deliveryComplete(IMqttDeliveryToken token) {
@@ -154,8 +156,6 @@ public class ServiceForUpdate extends Service {
             try {
                 getTruckVitals(); //this function can change value of mInterval.
             } finally {
-                // 100% guarantee that this always happens, even if
-                // your update method throws an exception
                 mHandler.postDelayed(mStatusChecker, mInterval);
             }
         }
