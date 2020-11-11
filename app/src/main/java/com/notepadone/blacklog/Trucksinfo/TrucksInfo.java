@@ -27,6 +27,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.MenuItem;
@@ -119,7 +120,8 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
         Intent serviceIntent = new Intent(TrucksInfo.this, ServiceForUpdate.class);
         serviceIntent.putExtra("inputExtra", "input");
 
-        ContextCompat.startForegroundService(TrucksInfo.this, serviceIntent);
+
+        //ContextCompat.startForegroundService(TrucksInfo.this, serviceIntent);
 
         toolbar = findViewById(R.id.toolbar);
 
@@ -131,12 +133,20 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
 
         trucksObjectList = new ArrayList<>();
         register();
-        mHandler = new Handler();
-        startRepeatingTask();
+       // mHandler = new Handler();
+       // startRepeatingTask();
 
+        final Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //Do something after 100ms
+                ContextCompat.startForegroundService(TrucksInfo.this, serviceIntent);
+            }
+        }, 2000);
 
-        listeners();
-        createNotificationChannel();
+        //listeners();
+        //createNotificationChannel();
 
         drawerToggle = new EndDrawerToggle(this,
                 drawerLayout,
@@ -146,6 +156,7 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
         drawerLayout.addDrawerListener(drawerToggle);
         drawerToggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
+
         try {
             String clientId = MqttClient.generateClientId();
             client = new MqttAndroidClient(TrucksInfo.this, "tcp://otomator.com:1883", clientId);
@@ -180,18 +191,6 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
             e.printStackTrace();
         }
     }
-
-    public void listeners(){
-       /* backarrow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(TrucksInfo.this, LoginActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        */
-    }
     // connecting the mttq server fot information about trucks
     public void getTruckVitals(){
         try {
@@ -211,7 +210,6 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
                     public void messageArrived(String topic, MqttMessage message) throws Exception {
                         Log.d("tag","message>>" + new String(message.getPayload()));
                         Log.d("tag","topic>>" + topic);
-                     //   Toast.makeText(getApplicationContext(),"arrived here"+new String(message.getPayload()),Toast.LENGTH_LONG).show();
                         try {
                             JSONObject jsonObject = new JSONObject(new String(message.getPayload()));
 
@@ -258,7 +256,7 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
         @Override
         public void run() {
             try {
-                getTruckVitals(); //this function can change value of mInterval.
+             //   getTruckVitals(); //this function can change value of mInterval.
             } finally {
                 mHandler.postDelayed(mStatusChecker, mInterval);
             }
@@ -283,12 +281,11 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
                                     //getting the json object of the particular index inside the array
                                     JSONObject vehicleObject = jsonArrayForVehicles.getJSONObject(i);
 
-                                    Toast.makeText(getApplicationContext(),vehicleObject.getString("vehicle_longitude"),Toast.LENGTH_LONG).show();
                                     //creating a hero object and giving them the values from json object
                                     long time = Long.parseLong(vehicleObject.getString("lid_status_timestamp"));
                                     double t = (time)/3600;
                                     ClientList.map.put(vehicleObject.getString("device_id"),vehicleObject.getString("vehicle_no"));
-
+                                    ClientList.clientList.add(vehicleObject.getString("device_id"));
                                     trucksObjectList.add(new TrucksObject(vehicleObject.getString("vehicle_longitude"),vehicleObject.getString("vehicle_latitude"),vehicleObject.getString("lid_status_timestamp"),vehicleObject.getString("device_id"),vehicleObject.getString("vehicle_no"),vehicleObject.getString("blacklog_model"),vehicleObject.getString("lid_status"),vehicleObject.getString("lid_status"),"NA"));
                                 }
                                 TruckInfoAdapter adapter = new TruckInfoAdapter(getApplicationContext(),trucksObjectList);
@@ -296,7 +293,6 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
                                 //adapter.notifyDataSetChanged();
                                 recyclerView.setAdapter(adapter);
                             } catch (JSONException e) {
-                                Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
                                 e.printStackTrace();
                             }
                         }
@@ -304,7 +300,6 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
                     new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getApplicationContext(),error.getMessage(),Toast.LENGTH_LONG).show();
 
                             Log.e("LOG_VOLLEYResponseError", error.toString());
 
@@ -322,7 +317,6 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
 
             requestQueue.add(stringRequest);
         } catch (Exception e) {
-            Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }
     }
