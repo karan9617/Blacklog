@@ -287,6 +287,8 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
                                     //creating a hero object and giving them the values from json object
                                     long time = Long.parseLong(vehicleObject.getString("lid_status_timestamp"));
                                     double t = (time)/3600;
+                                    ClientList.map.put(vehicleObject.getString("device_id"),vehicleObject.getString("vehicle_no"));
+
                                     trucksObjectList.add(new TrucksObject(vehicleObject.getString("vehicle_longitude"),vehicleObject.getString("vehicle_latitude"),vehicleObject.getString("lid_status_timestamp"),vehicleObject.getString("device_id"),vehicleObject.getString("vehicle_no"),vehicleObject.getString("blacklog_model"),vehicleObject.getString("lid_status"),vehicleObject.getString("lid_status"),"NA"));
                                 }
                                 TruckInfoAdapter adapter = new TruckInfoAdapter(getApplicationContext(),trucksObjectList);

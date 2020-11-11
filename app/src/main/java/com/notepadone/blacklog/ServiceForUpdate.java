@@ -135,15 +135,23 @@ public class ServiceForUpdate extends Service implements ClientList {
 /*
 *   closed open and closed (open only notification)
 * */
+                        String vehicle_no = ClientList.map.get(jsonObject.getString("did"));
                         Notification notification = new NotificationCompat.Builder(getApplicationContext(), "exampleServiceChannel")
                                 .setContentTitle(topic)
-                                .setContentText( "Lid Status :"+ jsonObject.getString("lid_status"))
+                                .setContentText( vehicle_no+ " has Lid Status :"+ jsonObject.getString("lid_status"))
                                 .setSmallIcon(R.drawable.playstore).setContentIntent(pendingIntent).build();
                         NotificationManager notificationManager=  (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
                         int cv = Integer.parseInt(topic.substring(topic.length()-1));
                         Random rn  = new Random();
 
-                        notificationManager.notify(rn.nextInt(9),notification);
+                        int c = rn.nextInt();
+                        if(c == 1){
+                            notificationManager.notify(2,notification);
+
+                        }
+                        else{
+                            notificationManager.notify(rn.nextInt(9),notification);
+                        }
                     }
                     @Override
                     public void deliveryComplete(IMqttDeliveryToken token) {
