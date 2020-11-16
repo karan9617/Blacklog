@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    android:layout_margin="0dp"
+
     android:background="#00000000"
     android:id="@+id/drawerLayout"
     tools:openDrawer="end"
@@ -17,16 +17,16 @@
         android:gravity="end"
         android:background="#00000000"
         android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="#54030202"
+            android:background="#000000"
             android:elevation="20dp"
             android:gravity="right"
 
             android:theme="@style/ThemeOverlay.AppCompat.Dark">
-
 
 
         </androidx.appcompat.widget.Toolbar>

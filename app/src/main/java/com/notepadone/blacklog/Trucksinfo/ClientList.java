@@ -9,4 +9,7 @@ public interface ClientList {
     List<String> clientList = new ArrayList<>();
 
     HashMap<String,String> map = new HashMap<>();
+
+
+    HashMap<String,String> notificationChannels = new HashMap<>();
 }

@@ -132,7 +132,7 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
 
 
         trucksObjectList = new ArrayList<>();
-        register();
+        getInitialTrucksInfo();
        // mHandler = new Handler();
        // startRepeatingTask();
 
@@ -144,7 +144,6 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
                 ContextCompat.startForegroundService(TrucksInfo.this, serviceIntent);
             }
         }, 2000);
-
         //listeners();
         //createNotificationChannel();
 
@@ -249,7 +248,7 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stopRepeatingTask();
+        //stopRepeatingTask();
     }
 
     Runnable mStatusChecker = new Runnable() {
@@ -263,7 +262,7 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
         }
     };
 
-    public void register(){
+    public void getInitialTrucksInfo(){
         try {
             RequestQueue requestQueue = Volley.newRequestQueue(this);
             String URL = "http://api.blacklog.in/vehicle/get_vehicle.php";

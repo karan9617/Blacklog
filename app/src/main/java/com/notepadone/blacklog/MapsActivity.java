@@ -38,8 +38,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
             getActionBar().hide();
-
-
         }
         catch (NullPointerException e){}
 
@@ -54,6 +52,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         lat = i.getStringExtra("lat");
         longitude  = i.getStringExtra("long");
 
+        Toast.makeText(getApplicationContext(),lat+":"+longitude,Toast.LENGTH_SHORT).show();
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationView);
         toolbar = findViewById(R.id.toolbar);
@@ -83,7 +82,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         // Add a marker in Sydney and move the camera
         //adjust with the longitude and latitude
         if(lat.equalsIgnoreCase("-1") && longitude.equalsIgnoreCase("-1")){
-            LatLng sydney = new LatLng(Double.parseDouble(lat),Double.parseDouble(longitude));
+            LatLng sydney = new LatLng(23.1815,79.9864);
             mMap.addMarker(new MarkerOptions().position(sydney).title("Current Location"));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
             Toast.makeText(getApplicationContext(),"Location not available",Toast.LENGTH_LONG).show();
@@ -91,8 +90,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         else{
             LatLng sydney = new LatLng(Double.parseDouble(lat),Double.parseDouble(longitude));
             mMap.addMarker(new MarkerOptions().position(sydney).title("Current Location"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+          //  mMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+
+            mMap.getMaxZoomLevel();
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(lat), Double.parseDouble(longitude)), 12.0f));
+
+
         }
 
+    }
+
+    @Override
+    protected void onNewIntent(Intent i) {
+
+
+        String latitude = i.getStringExtra("lat");
+        String currentLongitude  = i.getStringExtra("long");
+        LatLng sydney = new LatLng(Double.parseDouble(latitude),Double.parseDouble(currentLongitude));
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Current Location"));
+        //  mMap.animateCamera(CameraUpdateFactory.zoomTo(10), 2000, null);
+
+        mMap.getMaxZoomLevel();
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(Double.parseDouble(latitude), Double.parseDouble(currentLongitude)), 12.0f));
+
+
+        super.onNewIntent(i);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
     }
 }

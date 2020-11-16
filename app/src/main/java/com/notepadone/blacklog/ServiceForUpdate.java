@@ -81,7 +81,10 @@ public class ServiceForUpdate extends Service implements ClientList {
 
                        // client.subscribe("BL00001",1);
                        // client.subscribe("BL00002",1);
+                        Random randomNumberGenerator = new Random();
                         for (String s : ClientList.clientList) {
+                            int channelForDevice = randomNumberGenerator.nextInt(100);
+                            ClientList.notificationChannels.put(s,String.valueOf(channelForDevice));
                             client.subscribe(s, 1);
                         }
                     } catch (MqttException e) {
@@ -143,7 +146,6 @@ public class ServiceForUpdate extends Service implements ClientList {
 
  */
 
-
                 client.setCallback(new MqttCallback() {
 
                     @Override
@@ -156,12 +158,19 @@ public class ServiceForUpdate extends Service implements ClientList {
                         //
                         // Log.d("tag","topic>>" + topic);
                         JSONObject jsonObject = new JSONObject(new String(message.getPayload()));
-                        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
-                        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, 0);
+                        Intent notificationIntent = new Intent(getApplicationContext(), MapsActivity.class);
+                        notificationIntent.putExtra("lat",jsonObject.getString("lat"));
+
+                        notificationIntent.putExtra("long",jsonObject.getString("lon"));
+                        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+                        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent,
+                                PendingIntent.FLAG_UPDATE_CURRENT);
 
                     String lidstatus = "";
                     if(jsonObject.getString("lid_status").equals("1")){
                         lidstatus = "opened";
+
                     }
                     else{
                         lidstatus = "closed";
@@ -173,9 +182,11 @@ public class ServiceForUpdate extends Service implements ClientList {
                         Notification notification = new NotificationCompat.Builder(getApplicationContext(), "exampleServiceChannel")
                                 .setContentTitle(topic)
                                 .setContentText( vehicle_no+ " has Lid Status "+ lidstatus + " at location "+""+spl[0])
-                                .setSmallIcon(R.drawable.playstore).setContentIntent(pendingIntent).build();
+                                .setSmallIcon(R.drawable.playstore).
+                                        setContentIntent(pendingIntent).build();
+
                         NotificationManager notificationManager=  (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
-                        int cv = Integer.parseInt(topic.substring(topic.length()-1));
+                        int cv = Integer.parseInt(topic.substring(topic.length()-1)) + 1;
                         Random rn  = new Random();
 
                         int c = rn.nextInt();
