@@ -56,7 +56,7 @@ public class MainActivity2 extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
 
         SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
-        String usernameString = sharedPref.getString("usernameShared","");
+        String usernameString = sharedPref.getString("userblacklog1","");
         if(usernameString.length() == 0) {
             next = findViewById(R.id.next);
             viewPager = findViewById(R.id.sliderViewPager);
@@ -65,7 +65,7 @@ public class MainActivity2 extends AppCompatActivity {
             sliderAdapter = new SliderAdapter(this);
             viewPager.setAdapter(sliderAdapter);
 
-            setupMqttServer();
+            //setupMqttServer();
             addDotIndicator(0);
             viewPager.addOnPageChangeListener(viewListener);
             listeners();

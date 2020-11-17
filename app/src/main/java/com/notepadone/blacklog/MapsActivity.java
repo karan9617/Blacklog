@@ -52,7 +52,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         lat = i.getStringExtra("lat");
         longitude  = i.getStringExtra("long");
 
-        Toast.makeText(getApplicationContext(),lat+":"+longitude,Toast.LENGTH_SHORT).show();
+       // Toast.makeText(getApplicationContext(),lat+":"+longitude,Toast.LENGTH_SHORT).show();
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationView);
         toolbar = findViewById(R.id.toolbar);

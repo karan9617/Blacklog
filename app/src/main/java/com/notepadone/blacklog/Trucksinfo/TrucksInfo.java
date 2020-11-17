@@ -35,6 +35,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 
@@ -81,6 +82,7 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
     RecyclerView recyclerView;
     Toolbar toolbar;
     //ImageView backarrow;
+    ProgressBar progress_circular;
     List<TrucksObject> trucksObjectList;
     MqttAndroidClient client;
     private EndDrawerToggle drawerToggle;
@@ -116,7 +118,8 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
         drawerLayout = findViewById(R.id.drawerLayout);
         navigationView = findViewById(R.id.navigationView);
 
-
+        progress_circular = findViewById(R.id.progress_circular);
+        progress_circular.setVisibility(View.VISIBLE);
         Intent serviceIntent = new Intent(TrucksInfo.this, ServiceForUpdate.class);
         serviceIntent.putExtra("inputExtra", "input");
 
@@ -136,14 +139,16 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
        // mHandler = new Handler();
        // startRepeatingTask();
 
-        final Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //Do something after 100ms
-                ContextCompat.startForegroundService(TrucksInfo.this, serviceIntent);
-            }
-        }, 2000);
+
+            final Handler handler = new Handler(Looper.getMainLooper());
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    //Do something after 100ms
+                    progress_circular.setVisibility(View.INVISIBLE);
+                }
+            }, 2000);
+
         //listeners();
         //createNotificationChannel();
 
@@ -164,6 +169,12 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     //Toast.makeText(getApplicationContext(),"onSuccess",Toast.LENGTH_SHORT).show();
+                    if(!ServiceForUpdate.isRunning) {
+
+
+                        Intent serviceIntent = new Intent(TrucksInfo.this, ServiceForUpdate.class);
+                        ContextCompat.startForegroundService(TrucksInfo.this, serviceIntent);
+                    }
                 }
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
@@ -191,59 +202,7 @@ public class TrucksInfo extends AppCompatActivity implements NavigationView.OnNa
         }
     }
     // connecting the mttq server fot information about trucks
-    public void getTruckVitals(){
-        try {
-            if (client.isConnected()) {
-                Log.d("tag","client.isConnected()>>" + client.isConnected());
-                mInterval  =20000;
-                //client.subscribe("BL00001", 1);
-                for(int i =0;i < trucksObjectList.size();i++){
-                    client.subscribe(trucksObjectList.get(i).getDevice_id(), 1);
-                }
-                client.setCallback(new MqttCallback() {
-                    @Override
-                    public void connectionLost(Throwable cause) {
-                        Log.d("tag", "message>> connection lost");
-                    }
-                    @Override
-                    public void messageArrived(String topic, MqttMessage message) throws Exception {
-                        Log.d("tag","message>>" + new String(message.getPayload()));
-                        Log.d("tag","topic>>" + topic);
-                        try {
-                            JSONObject jsonObject = new JSONObject(new String(message.getPayload()));
 
-                            for(int i=0;i<trucksObjectList.size();i++){
-                                ClientList.clientList.add(trucksObjectList.get(i).getDevice_id());
-                                if (trucksObjectList.get(i).getDevice_id().equalsIgnoreCase(jsonObject.getString("did"))){
-                                    trucksObjectList.get(i).setSignal(jsonObject.getString("gsm_signal"));
-                                    trucksObjectList.get(i).setVehicle_latitude(jsonObject.getString("lat"));
-                                    trucksObjectList.get(i).setVehicle_longitude(jsonObject.getString("lon"));
-                                    trucksObjectList.get(i).setTs(jsonObject.getString("ts"));
-                                    trucksObjectList.get(i).setFuelLid(jsonObject.getString("lid_status"));
-                                    trucksObjectList.get(i).setSpeed(jsonObject.getString("speed") + jsonObject.getString("speed_unit"));
-                                }
-                            }
-                            TruckInfoAdapter adapter = new TruckInfoAdapter(getApplicationContext(),trucksObjectList);
-
-                            recyclerView.setAdapter(adapter);
-                        }catch (JSONException err){
-                            Toast.makeText(getApplicationContext(),err.getMessage(),Toast.LENGTH_LONG).show();
-
-                            Log.d("Error", err.toString());
-                        }
-                    }
-                    @Override
-                    public void deliveryComplete(IMqttDeliveryToken token) {
-
-                    }
-                });
-            }
-        } catch (Exception e) {
-            //Toast.makeText(getApplicationContext(),e.getMessage(),Toast.LENGTH_LONG).show();
-
-            Log.d("tag","Error :" + e);
-        }
-    }
 
     @Override
     public void onDestroy() {

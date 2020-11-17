@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences sh = getSharedPreferences("MySharedPref",MODE_PRIVATE);
 
-        String s = sh.getString("username","");
+        String s = sh.getString("userblacklog1","");
         if(s.length() == 0){
             logo = findViewById(R.id.logoblacklog);
 

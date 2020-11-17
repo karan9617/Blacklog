@@ -120,7 +120,7 @@ public class LoginActivity extends AppCompatActivity {
                                 if(jsonObject.getString("message").equalsIgnoreCase("User Authorized")) {
                                     SharedPreferences sharedPreferences = getSharedPreferences("MySharedPref", MODE_PRIVATE);
                                     SharedPreferences.Editor myEdit = sharedPreferences.edit();
-                                    myEdit.putString("username",username.getText().toString());
+                                    myEdit.putString("userblacklog1",username.getText().toString());
                                     myEdit.putString("password",password.getText().toString());
                                     //myEdit.putString("token",jsonObject.getString("token"));
                                     myEdit.commit();

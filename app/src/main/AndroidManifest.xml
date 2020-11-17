@@ -12,7 +12,9 @@
         android:usesCleartextTraffic="true"
         android:networkSecurityConfig="@xml/network_security_config"
         android:theme="@style/AppTheme">
-        <activity android:name=".Trucksinfo.TrucksInfo"></activity>
+        <activity android:name=".Trucksinfo.TrucksInfo"
+            android:screenOrientation="portrait"
+            ></activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").

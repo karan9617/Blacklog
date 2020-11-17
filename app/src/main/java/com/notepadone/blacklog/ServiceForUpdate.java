@@ -1,6 +1,7 @@
 package com.notepadone.blacklog;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -8,6 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
@@ -45,22 +47,31 @@ public class ServiceForUpdate extends Service implements ClientList {
     }
     private int mInterval = 20000; // in milliseconds
     private Handler mHandler;
+    public static boolean isRunning = false;
+    public static final String CHANNEL_ID = "ForegroundServiceChannel1";
     MqttAndroidClient client;
+
     int c = 1;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        String input = intent.getStringExtra("inputExtra");
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                0, notificationIntent, 0);
-        Notification notification = new NotificationCompat.Builder(this, "exampleServiceChannel")
+
+
+        isRunning = true;
+
+        createNotificationChannel();
+        isRunning = true;
+
+        // if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O) {
+        Intent notificationIntent = new Intent(this, TrucksInfo.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Blacklog")
-                .setContentText("Your vehicles are secured.. :)")
+                .setContentText("Yours vehicles are protected.. :)")
                 .setSmallIcon(R.drawable.playstore)
                 .setContentIntent(pendingIntent)
                 .build();
+        startForeground(2, notification);
 
-        startForeground(1, notification);
         mHandler = new Handler();
         startRepeatingTask();
         try {
@@ -117,11 +128,20 @@ public class ServiceForUpdate extends Service implements ClientList {
             e.printStackTrace();
         }
 
-
-        //do heavy work on a background thread
-        //stopSelf();
         return START_NOT_STICKY;
     }
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel serviceChannel = new NotificationChannel(
+                    CHANNEL_ID,
+                    "Foreground Service Channel",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(serviceChannel);
+        }
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
